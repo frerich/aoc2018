@@ -1,5 +1,4 @@
-import Data.List (group, sort, minimumBy, tails)
-import Data.Ord (comparing)
+import Data.List (group, sort, tails)
 
 
 main :: IO ()
@@ -18,10 +17,10 @@ partOne ids = length idsWithDoublettes * length idsWithTriplets
 
 
 partTwo :: [String] -> String
-partTwo ids = [a | (a,b) <- zip correctIdA correctIdB, a == b]
+partTwo ids = [a | (a,b) <- zip idA idB, a == b]
   where
-    (correctIdA, correctIdB) = minimumBy (comparing numDifferences) (pairs ids)
-    numDifferences (as,bs) = length [a | (a,b) <- zip as bs, a /= b]
+    (idA,idB) = head . filter (null . drop 1 . differences) . pairs $ ids
+    differences (as,bs) = filter (uncurry (/=)) (zip as bs)
 
 
 -- | Counts how often each element in the input list occurs
