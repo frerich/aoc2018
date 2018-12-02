@@ -21,6 +21,31 @@ fn part_one(ids: &Vec<String>) -> usize {
 }
 
 
+fn pairs<T>(v: &Vec<T>) -> Vec<(&T,&T)> {
+    let mut result = vec![];
+    for (i, x) in v.iter().enumerate() {
+        for y in v[i+1..].iter() {
+            result.push((x,y));
+        }
+    }
+    result
+}
+
+
+fn part_two(ids: &Vec<String>) -> String
+{
+    for (a,b) in pairs(ids) {
+        let pairwise_chars: Vec<(char,char)> = a.chars().zip(b.chars()).collect();
+
+        let different_chars = pairwise_chars.iter().filter(|(x,y)| x != y);
+        if different_chars.count() == 1 {
+            return pairwise_chars.iter().filter(|(x,y)| x == y).map(|(x,y)| x).collect();
+        }
+    }
+    String::new()
+}
+
+
 fn main() {
     let input_file = File::open("input.txt").unwrap();
 
@@ -30,4 +55,5 @@ fn main() {
                 .collect();
 
     println!("Part one: {:?}", part_one(&ids));
+    println!("Part two: {:?}", part_two(&ids));
 }
