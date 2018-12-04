@@ -138,6 +138,48 @@ fn part_one(records: &Vec<Record>) -> i32
     return sleepiest_guard_id * most_common_minute;
 }
 
+
+fn part_two(records: &Vec<Record>) -> i32 {
+    // TODO: Drop notion of Shits in favor of sleep phases
+    let shifts = reconstruct_shifts(&records);
+
+    // Build a map telling which guard was asleep on which minute
+    let mut asleep_phases: HashMap<i32, Vec<HashSet<u32>>> = HashMap::new();
+    for shift in &shifts {
+        let mut asleep_mins: HashSet<u32> = HashSet::new();
+        for (start, end) in &shift.asleep {
+            for min in start.minute() .. end.minute() {
+                asleep_mins.insert(min);
+            }
+        }
+
+        match asleep_phases.entry(shift.id) {
+            Entry::Vacant(e) => { e.insert(vec![asleep_mins]); }
+            Entry::Occupied(mut e) => { e.get_mut().push(asleep_mins); }
+        }
+    }
+
+    // Identify the sleepiest guard by counting how long every guard was asleep
+    //. TODO: Replace with asleep_phases.max_by_key
+    let mut max_repeated_minute: usize = 0;
+    let mut result: i32 = 0;
+    for (id, sleep_phases) in &asleep_phases {
+        let mut counts: Counter<_> = Counter::new();
+        for phase in sleep_phases.iter() {
+            counts += phase.iter().cloned().collect::<Counter<_>>();
+        }
+
+        if let Some(most_common) = counts.most_common_ordered().get(0) {
+            if most_common.1 > max_repeated_minute {
+                max_repeated_minute = most_common.1;
+                result = id * most_common.0 as i32;
+            }
+        }
+    }
+
+    result
+}
+
 fn main() {
     let input_file = File::open("input.txt").unwrap();
 
@@ -149,5 +191,5 @@ fn main() {
     records.sort_by(|a, b| a.timestamp.cmp(&b.timestamp));
 
     println!("Part one: {:?}", part_one(&records));
-
+    println!("Part two: {:?}", part_two(&records));
 }
