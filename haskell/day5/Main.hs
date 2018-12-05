@@ -9,7 +9,6 @@ type Polymer = [Unit]
 main :: IO ()
 main = do
     polymer <- readFile "input.txt"
-    print (length polymer)
     putStrLn ("Part one: " ++ show (partOne polymer))
     putStrLn ("Part two: " ++ show (partTwo polymer))
 
@@ -25,8 +24,8 @@ canReact a b = toUpper a == toUpper b && a /= b
 react :: Polymer -> Polymer
 react (a:b:rest)
     | canReact a b = react rest
-    | otherwise    = a : react (b:rest)
-react xs         = xs
+    | otherwise    = a : react (b : rest)
+react xs           = xs
 
 
 -- | Iteratively applies a function until it converges to some value
@@ -42,4 +41,4 @@ partTwo polymer = minimum (map (length . converge react) candidates)
 
 
 stripUnit :: Unit -> Polymer -> Polymer
-stripUnit = filter (`notElem` [toLower u, toUpper u])
+stripUnit u = filter (`notElem` [toLower u, toUpper u])
