@@ -14,7 +14,7 @@ main = do
 
 
 partOne :: Polymer -> Int
-partOne = length . converge react
+partOne = length . react
 
 
 canReact :: Unit -> Unit -> Bool
@@ -22,20 +22,15 @@ canReact a b = toUpper a == toUpper b && a /= b
 
 
 react :: Polymer -> Polymer
-react (a:b:rest)
-    | canReact a b = react rest
-    | otherwise    = a : react (b : rest)
-react xs           = xs
-
-
--- | Iteratively applies a function until it converges to some value
-converge :: Eq a => (a -> a) -> a -> a
-converge f xs = let xss = iterate f xs
-                in fst (head (dropWhile (uncurry (/=)) (zip xss (tail xss))))
+react = foldr go ""
+  where
+    go x (y:ys) | canReact x y = ys
+                | otherwise    = x : y : ys
+    go x xs                    = x : xs
 
 
 partTwo :: Polymer -> Int
-partTwo polymer = minimum (map (length . converge react) candidates)
+partTwo polymer = minimum (map partOne candidates)
   where
     candidates = map (\u -> stripUnit u polymer) (nub (map toUpper polymer))
 
