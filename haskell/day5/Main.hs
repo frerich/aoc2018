@@ -1,4 +1,5 @@
-import Data.Char (toUpper)
+import Data.Char (toLower, toUpper)
+import Data.List (nub, minimum)
 
 
 type Unit = Char
@@ -10,6 +11,7 @@ main = do
     polymer <- readFile "input.txt"
     print (length polymer)
     putStrLn ("Part one: " ++ show (partOne polymer))
+    putStrLn ("Part two: " ++ show (partTwo polymer))
 
 
 partOne :: Polymer -> Int
@@ -22,12 +24,22 @@ canReact a b = toUpper a == toUpper b && a /= b
 
 react :: Polymer -> Polymer
 react (a:b:rest)
-    | react a b = react rest
-    | otherwise = a : react (b:rest)
+    | canReact a b = react rest
+    | otherwise    = a : react (b:rest)
 react xs         = xs
 
 
 -- | Iteratively applies a function until it converges to some value
 converge :: Eq a => (a -> a) -> a -> a
 converge f xs = let xss = iterate f xs
-                in fst (head (dropWhile (uncurry (/=)) (zip xs (tail xs))))
+                in fst (head (dropWhile (uncurry (/=)) (zip xss (tail xss))))
+
+
+partTwo :: Polymer -> Int
+partTwo polymer = minimum (map (length . converge react) candidates)
+  where
+    candidates = map (\u -> stripUnit u polymer) (nub (map toUpper polymer))
+
+
+stripUnit :: Unit -> Polymer -> Polymer
+stripUnit = filter (`notElem` [toLower u, toUpper u])
