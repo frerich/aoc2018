@@ -50,7 +50,8 @@ fn initial_steps(deps: &Dependencies) -> Vec<Step> {
 
     deps
         .keys()
-        .filter_map(|step| if all_next_steps.contains(step) { None } else { Some(*step) })
+        .filter(|step| !all_next_steps.contains(step))
+        .cloned()
         .collect()
 }
 
