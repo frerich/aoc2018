@@ -1,6 +1,6 @@
 [package]
 name = "day7"
 version = "0.1.0"
-authors = ["Frerich Raabe <raabe@froglogic.com>"]
+authors = ["Frerich Raabe <frerich.raabe@gmail.com>"]
 
 [dependencies]
