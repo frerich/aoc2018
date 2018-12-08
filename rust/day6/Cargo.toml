@@ -1,0 +1,6 @@
+[package]
+name = "day6"
+version = "0.1.0"
+authors = ["Frerich Raabe <raabe@froglogic.com>"]
+
+[dependencies]
