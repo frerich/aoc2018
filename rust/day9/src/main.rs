@@ -28,7 +28,7 @@ fn play(num_players: usize, num_marbles: u32) -> u32 {
             rotate(&mut circle, len - 7);
             scores[player as usize - 1] += marble + circle.pop_front().unwrap();
         } else if marble == 1 { // Ugly special case. :-/
-            circle.push_front(1);
+            circle.push_front(marble);
         } else {
             rotate(&mut circle, 2);
             circle.push_front(marble);
