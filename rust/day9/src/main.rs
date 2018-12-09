@@ -17,10 +17,6 @@ fn play(num_players: usize, num_marbles: u32) -> u32 {
     circle.push_back(0);
 
     for (player, marble) in (1..=num_players).cycle().zip(1..=num_marbles) {
-        if false {
-            println!("[{}] {:?}", player, circle);
-        }
-
         if marble % 23 == 0 {
             let len = circle.len();
             rotate(&mut circle, len - 7);
@@ -30,6 +26,10 @@ fn play(num_players: usize, num_marbles: u32) -> u32 {
         } else {
             rotate(&mut circle, 2);
             circle.push_front(marble);
+        }
+
+        if false {
+            println!("[{}] {:?}", player, circle);
         }
     }
 
