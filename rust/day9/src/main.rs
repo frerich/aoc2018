@@ -1,5 +1,3 @@
-use std::iter;
-use std::iter::FromIterator;
 use std::collections::LinkedList;
 
 
@@ -13,7 +11,7 @@ fn rotate<T>(l: & mut LinkedList<T>, distance: usize)
 
 
 fn play(num_players: usize, num_marbles: u32) -> u32 {
-    let mut scores: Vec<u32> = Vec::from_iter(iter::repeat(0).take(num_players));
+    let mut scores: Vec<u32> = vec![0; num_players];
 
     let mut circle: LinkedList<u32> = LinkedList::new();
     circle.push_back(0);
