@@ -86,7 +86,7 @@ fn main() {
         let area: i64 = (max_x - min_x) as i64 * (max_y - min_y) as i64;
 
         if prev_area > 0 && prev_area < area {
-            println!("{} seconds:\n{}", sec, render(&prev_points));
+            println!("After {} seconds:\n{}", sec - 1, render(&prev_points));
             break;
         }
         prev_area = area;
