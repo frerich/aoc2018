@@ -3,18 +3,17 @@ extern crate counter;
 
 use std::fs;
 use std::iter::FromIterator;
-use std::cmp::Ordering;
 use std::collections::HashSet;
 use counter::Counter;
 
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, Clone)]
 enum Turn {
     Left, Straight, Right
 }
 
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 enum Direction {
     North, West, South, East
 }
@@ -26,34 +25,6 @@ struct Cart {
     direction: Direction,
     next_turn: Turn
 }
-
-
-impl PartialOrd for Cart {
-    fn partial_cmp(&self, other: &Cart) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-
-impl Ord for Cart {
-    fn cmp(&self, other: &Cart) -> Ordering {
-        if self.pos.1 != other.pos.1 {
-            self.pos.1.cmp(&other.pos.1)
-        } else {
-            self.pos.0.cmp(&other.pos.0)
-        }
-    }
-}
-
-
-impl PartialEq for Cart {
-    fn eq(&self, other: &Cart) -> bool {
-        self.pos == other.pos
-    }
-}
-
-
-impl Eq for Cart { }
 
 
 fn find_carts(grid: &mut Vec<Vec<char>>) -> Vec<Cart>
@@ -164,7 +135,7 @@ fn part_one(grid: &Vec<Vec<char>>, initial_carts: &Vec<Cart>) -> (usize,usize)
 {
     let mut carts = initial_carts.clone();
     loop {
-        carts.sort();
+        carts.sort_by_key(|c| (c.pos.1, c.pos.0) );
         let mut new_cart_positions: HashSet<(usize,usize)> = HashSet::new();
         for cart in carts.iter_mut() {
             if new_cart_positions.contains(&cart.pos) {
@@ -184,7 +155,7 @@ fn part_two(grid: &Vec<Vec<char>>, initial_carts: &Vec<Cart>) -> (usize,usize)
 {
     let mut carts = initial_carts.clone();
     while carts.len() > 1 {
-        carts.sort();
+        carts.sort_by_key(|c| (c.pos.1, c.pos.0) );
         let mut new_cart_positions: HashSet<(usize,usize)> = HashSet::new();
         for cart in carts.iter_mut() {
             if new_cart_positions.contains(&cart.pos) {
