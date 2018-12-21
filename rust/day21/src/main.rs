@@ -103,13 +103,13 @@ fn part_two(p: &Program) -> usize {
         exec(cmd, &mut m, p.ip_register);
 
         if m.ip == 28 {
-            // If we saw the current value for register 4 already, we are about to enter a loop; if
-            // so, return the value we saw on the previous iteration.
-            if seen_reg4_vals.contains(&m.regs[4]) {
+            // If we saw the current value for register 4 already, we are
+            // about to enter a loop; if so, return the value we saw on the
+            // previous iteration.
+            if !seen_reg4_vals.insert(m.regs[4]) {
                 return last_reg4_val;
             }
             last_reg4_val = m.regs[4];
-            seen_reg4_vals.insert(last_reg4_val);
         }
     }
 
