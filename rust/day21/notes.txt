@@ -1,0 +1,37 @@
+#ip 2
+[00] seti 123 0 4            # reg[4] = 123
+[01] bani 4 456 4            # reg[4] = reg[4] & 456
+[02] eqri 4 72 4             # reg[4] = reg[4] == 72 ? 1 : 0        |
+[03] addr 4 2 2              # reg[2] = reg[2] + reg[4]             | goto 05 if reg[4] == 72
+[04] seti 0 0 2              # reg[2] = 0                           | goto 01
+[05] seti 0 7 4              # reg[4] = 0
+[06] bori 4 65536 3          # reg[3] = reg[4] | 65536
+[07] seti 10283511 1 4       # reg[4] = 10283511
+  [08] bani 3 255 1            # reg[1] = reg[3] & 255
+  [09] addr 4 1 4              # reg[4] = reg[4] + reg[1]
+  [10] bani 4 16777215 4       # reg[4] = reg[4] & 16777215
+  [11] muli 4 65899 4          # reg[4] = reg[4] * 65899
+  [12] bani 4 16777215 4       # reg[4] = reg[4] & 16777215
+  [13] gtir 256 3 1            # reg[1] = 256 > reg[3] ? 1 : 0
+  [14] addr 1 2 2              # reg[2] = reg[1] + reg[2]             | goto 16 if 256 > reg[3]
+  [15] addi 2 1 2              # reg[2] = reg[2] + 1                  | goto 17
+  [16] seti 27 8 2             # reg[2] = 27                          | goto 28
+  
+  [17] seti 0 1 1              # reg[1] = 0
+  
+    [18] addi 1 1 5              # reg[5] = reg[1] + 1
+    [19] muli 5 256 5            # reg[5] = reg[5] * 256
+    [20] gtrr 5 3 5              # reg[5] = reg[5] > reg[3] ? 1 : 0     |
+    [21] addr 5 2 2              # reg[2] = reg[5] + reg[2]             | goto 23 if reg[5] > reg[3]
+    [22] addi 2 1 2              # reg[2] = reg[2] + 1                  | goto 24
+    [23] seti 25 3 2             # reg[2] = 25                          | goto 26
+    [24] addi 1 1 1              # reg[1] = reg[1] + 1
+    [25] seti 17 0 2             # reg[2] = 17                          | goto 18
+  
+  [26] setr 1 4 3              # reg[3] = reg[1]
+  [27] seti 7 6 2              # reg[2] = 7                           | goto 8
+
+[28] eqrr 4 0 1              # reg[1] = reg[4] == reg[0] ? 1 : 0    |
+[29] addr 1 2 2              # reg[2] = reg[1] + reg[2]             | goto 31 if reg[4] == reg[0]
+[30] seti 5 2 2              # reg[2] = 5                           | goto 6
+
