@@ -57,7 +57,7 @@ fn eliminate_loops(s: &str) -> String {
             _   => pos
         };
         if visited.contains(&pos) {
-            while visited[visited.len() - 1 ] != pos {
+            while visited[visited.len() - 1] != pos {
                 visited.pop();
                 steps.pop();
             }
