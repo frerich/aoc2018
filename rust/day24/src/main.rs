@@ -3,6 +3,7 @@ extern crate lazy_static;
 extern crate regex;
 
 use std::cmp;
+use std::cmp::Ordering;
 use std::fs;
 use regex::Regex;
 
@@ -182,10 +183,36 @@ fn part_one(groups: &Vec<Group>) -> i32 {
 }
 
 
+fn boost_immune_system(groups: &Vec<Group>, attack_damage_boost: i32) -> Vec<Group> {
+    groups
+        .iter()
+        .cloned()
+        .map(|g| match g.team {
+            Team::ImmuneSystem => Group { attack_damage: g.attack_damage + attack_damage_boost, .. g },
+            Team::Infection    => g,
+        })
+        .collect()
+}
+
+
+fn part_two(groups: &Vec<Group>) -> i32 {
+    let smallest_winning_boost = (0..100_000)
+        .collect::<Vec<i32>>()
+        .binary_search_by(|&boost| match combat(&mut boost_immune_system(groups, boost)) {
+            Some(Team::ImmuneSystem) => Ordering::Greater,
+            _                        => Ordering::Less
+        })
+        .unwrap_err() as i32;
+
+    part_one(&boost_immune_system(groups, smallest_winning_boost))
+}
+
+
 fn main() {
     let input = fs::read_to_string("input.txt").unwrap();
 
     let groups = parse(&input);
 
     println!("Part one: {}", part_one(&groups));
+    println!("Part two: {}", part_two(&groups));
 }
