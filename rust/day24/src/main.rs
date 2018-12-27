@@ -94,8 +94,15 @@ fn fight(groups: &mut Vec<Group>) {
 
 
 fn combat(groups: &mut Vec<Group>) -> Option<Team> {
+    let mut prev_num_units: i32 = groups.iter().map(|g| g.num_units).sum();
     while groups.iter().any(|g| g.team != groups[0].team) {
         fight(groups);
+
+        let num_units: i32 = groups.iter().map(|g| g.num_units).sum();
+        if num_units == prev_num_units {
+            return None;
+        }
+        prev_num_units = num_units;
     }
 
     if groups.is_empty() {
