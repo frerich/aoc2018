@@ -1,48 +1,35 @@
 use std::fs;
-use std::collections::HashSet;
-use std::iter;
 
 
 type Point = (i32,i32,i32,i32);
 
 
-fn neighbors(p: Point, distance: u32) -> HashSet<Point> {
-    if distance == 0 {
-        iter::once(p).collect()
-    } else {
-        let mut result = HashSet::new();
-        for q in neighbors(p, distance - 1) {
-            result.insert(q);
-            result.insert((q.0,     q.1,     q.2,     q.3 + 1));
-            result.insert((q.0,     q.1,     q.2,     q.3 - 1));
-            result.insert((q.0,     q.1,     q.2 + 1, q.3));
-            result.insert((q.0,     q.1,     q.2 - 1, q.3));
-            result.insert((q.0,     q.1 + 1, q.2,     q.3));
-            result.insert((q.0,     q.1 - 1, q.2,     q.3));
-            result.insert((q.0 + 1, q.1,     q.2,     q.3));
-            result.insert((q.0 - 1, q.1,     q.2,     q.3));
-        }
-        result
-    }
+fn distance(p: &Point, q: &Point) -> i32 {
+    (q.0 - p.0).abs() + (q.1 - p.1).abs() + (q.2 - p.2).abs() + (q.3 - p.3).abs()
 }
 
 
-fn constellations(points: &Vec<Point>) -> Vec<HashSet<Point>> {
+fn constellations(points: &Vec<Point>) -> Vec<Vec<Point>> {
     let mut points = points.clone();
     let mut result = Vec::new();
 
     while !points.is_empty() {
-        let mut constellation = neighbors(points.pop().unwrap(), 3);
+        let mut constellation = Vec::new();
+        constellation.push(points.pop().unwrap());
+
         loop {
-            let (connected, disconnected) : (Vec<_>, Vec<_>) = points.iter().partition(|p| constellation.contains(&p));
+            let (connected, disconnected) : (Vec<_>, Vec<_>) = points
+                .iter()
+                .partition(|p| constellation.iter().any(|q| distance(p, q) <= 3));
+
             if connected.is_empty() {
                 break;
             }
-            for p in connected {
-                constellation.extend(neighbors(p, 3));
-            }
+
+            constellation.extend(connected);
             points = disconnected;
         }
+
         result.push(constellation)
     }
 
@@ -58,15 +45,10 @@ fn parse(input: &str) -> Vec<Point> {
 }
 
 
-fn part_one(points: &Vec<Point>) -> usize {
-    constellations(points).len()
-}
-
-
 fn main() {
     let input = fs::read_to_string("input.txt").unwrap();
 
     let points = parse(&input);
 
-    println!("Part one: {}", part_one(&points));
+    println!("Part one: {}", constellations(&points).len());
 }
